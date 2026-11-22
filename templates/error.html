@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+{% block title %}Error {{ code }} · SmartClass{% endblock %}
+{% block content %}
+<div class="card" style="max-width:620px;margin:70px auto;text-align:center;padding:42px"><div class="eyebrow">SmartClass</div><h1 style="font:800 42px Manrope;margin:10px 0">{{ code }}</h1><h2>{{ message }}</h2><p class="muted">If you believe this is a mistake, contact your project administrator.</p><a class="btn" href="{{ url_for('index') }}">Return to dashboard</a></div>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Teacher Dashboard · SmartClass{% endblock %}
+{% block content %}
+<div class="page-head"><div><div class="eyebrow">Teacher workspace</div><h1>Your dashboard</h1><p class="sub">A quick overview of your teaching day.</p></div><a class="btn" href="{{ url_for('timetable') }}">View my timetable</a></div>
+<div class="grid">
+  <div class="card stat"><small>Today's assigned classes</small><strong>{{ todays_classes|length }}</strong><span>Your scheduled sessions today</span></div>
+  <div class="card stat"><small>Active classrooms</small><strong>{{ rooms_count }}</strong><span>Rooms available in the system</span></div>
+  <div class="card stat"><small>Rooms free now</small><strong>{{ free_now }}</strong><span>Based on the current time</span></div>
+</div>
+<div class="card"><h2>Today's classes</h2>
+  {% if todays_classes %}
+  <div class="table-wrap"><table><thead><tr><th>Time</th><th>Subject</th><th>Room</th><th>Batch</th><th></th></tr></thead><tbody>
+  {% for item in todays_classes %}<tr><td>{{ item.start_at.strftime('%I:%M %p') }} – {{ item.end_at.strftime('%I:%M %p') }}</td><td><strong>{{ item.subject }}</strong></td><td>{{ item.room.room_code }}</td><td>{{ item.batch.name if item.batch else '—' }}</td><td><a href="{{ url_for('reschedule', session_id=item.id) }}">Request change</a></td></tr>{% endfor %}
+  </tbody></table></div>
+  {% else %}<div class="empty"><strong>No classes scheduled today</strong>Your assigned classes will appear here.</div>{% endif %}
+</div>
+<div class="card"><h2>Recent notifications</h2>
+  {% for item in recent_notifications %}<div class="notification"><p>{{ item.message }}</p><small>{{ item.created_at.strftime('%d %b %Y, %I:%M %p') }}</small></div>{% else %}<div class="empty">You're all caught up.</div>{% endfor %}
+</div>
+{% endblock %}

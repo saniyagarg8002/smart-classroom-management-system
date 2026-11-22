@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard · SmartClass{% endblock %}
+{% block content %}
+<div class="page-head"><div><div class="eyebrow">Administration</div><h1>Admin dashboard</h1><p class="sub">Review teacher requests and oversee the B.Tech CSE demo batches.</p></div><a class="btn secondary" href="{{ url_for('timetable') }}">View all timetables</a></div>
+<div class="grid">
+  <div class="card stat"><small>Demo batches</small><strong>{{ batches|length }}</strong><span>B.Tech CSE groups</span></div>
+  <div class="card stat"><small>Pending requests</small><strong>{{ pending_requests|length }}</strong><span>Waiting for your review</span></div>
+  <div class="card stat"><small>Approval workflow</small><strong>Active</strong><span>Conflicts are checked again on approval</span></div>
+</div>
+<div class="card"><h2>Batch overview</h2><div style="display:flex;gap:9px;flex-wrap:wrap">{% for batch in batches %}<span class="pill">{{ batch.name }} · {{ batch.course_name }}</span>{% else %}<span class="muted">No batches found. Open the demo setup route once to create demo data.</span>{% endfor %}</div></div>
+<div class="card"><h2>Reschedule requests <span class="pill pending">{{ pending_requests|length }} pending</span></h2>
+{% if pending_requests %}
+<div class="table-wrap"><table><thead><tr><th>Teacher / class</th><th>Current schedule</th><th>Requested schedule</th><th>Reason</th><th>Decision</th></tr></thead><tbody>
+{% for req in pending_requests %}
+<tr>
+<td><strong>{{ req.teacher.name }}</strong><br><span class="muted">{{ req.class_session.subject }}</span></td>
+<td>{{ req.class_session.start_at.strftime('%d %b, %I:%M %p') }}<br><span class="muted">{{ req.class_session.room.room_code }}</span></td>
+<td>{{ req.new_start_at.strftime('%d %b, %I:%M %p') }} – {{ req.new_end_at.strftime('%I:%M %p') }}<br><span class="muted">{{ req.new_room.room_code }}</span></td>
+<td>{{ req.reason }}</td>
+<td><div style="display:flex;gap:7px;flex-wrap:wrap">
+<form method="post" action="{{ url_for('review_reschedule', request_id=req.id, decision='approve') }}"><button class="btn success" type="submit">Approve</button></form>
+<form method="post" action="{{ url_for('review_reschedule', request_id=req.id, decision='reject') }}" onsubmit="return confirm('Reject this reschedule request?')"><button class="btn danger" type="submit">Reject</button></form>
+</div></td>
+</tr>
+{% endfor %}
+</tbody></table></div>
+{% else %}<div class="empty"><strong>No pending requests</strong>New teacher reschedule requests will appear here.</div>{% endif %}
+</div>
+{% endblock %}

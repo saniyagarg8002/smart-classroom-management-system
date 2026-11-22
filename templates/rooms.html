@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Find Classrooms · SmartClass{% endblock %}
+{% block content %}
+<div class="page-head"><div><div class="eyebrow">Room availability</div><h1>Find an available classroom</h1><p class="sub">Filter by time, seating capacity, projector and building.</p></div></div>
+<div class="card"><form method="get" class="filters">
+<div class="field"><label>Date</label><input type="date" name="date" value="{{ selected_date }}" required></div>
+<div class="field"><label>Start time</label><input type="time" name="start" value="{{ selected_start }}" required></div>
+<div class="field"><label>End time</label><input type="time" name="end" value="{{ selected_end }}" required></div>
+<div class="field"><label>Minimum seats</label><input type="number" name="seats" min="1" value="{{ selected_seats }}"></div>
+<div class="field"><label>Projector</label><select name="projector"><option value="any" {% if selected_projector=='any' %}selected{% endif %}>Any</option><option value="yes" {% if selected_projector=='yes' %}selected{% endif %}>Required</option><option value="no" {% if selected_projector=='no' %}selected{% endif %}>Not required</option></select></div>
+<div class="field"><label>Building</label><select name="building"><option value="any">Any building</option>{% for building in buildings %}<option value="{{ building }}" {% if selected_building==building %}selected{% endif %}>{{ building }}</option>{% endfor %}</select></div>
+<button class="btn" type="submit">Search rooms</button>
+</form></div>
+{% for error in errors %}<div class="flash danger">{{ error }}</div>{% endfor %}
+<div class="card"><h2>Available classrooms</h2>
+{% if matches %}<div class="grid">{% for room in matches %}<div class="card" style="margin:0;box-shadow:none"><div class="eyebrow">{{ room.building }}</div><h2 style="font-size:20px;margin:7px 0">{{ room.room_code }}</h2><p class="muted">Floor {{ room.floor }} · {{ room.capacity }} seats</p><span class="pill">{% if room.has_projector %}Projector available{% else %}No projector{% endif %}</span></div>{% endfor %}</div>
+{% elif not errors %}<div class="empty"><strong>No matching rooms found</strong>Try changing the time, capacity or filters.</div>{% endif %}
+</div>
+{% endblock %}

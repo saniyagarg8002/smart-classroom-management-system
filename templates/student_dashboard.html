@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Student Dashboard · SmartClass{% endblock %}
+{% block content %}
+<div class="page-head"><div><div class="eyebrow">Student workspace · B.Tech CSE</div><h1>My classroom timetable</h1><p class="sub">Your daily schedule and classroom details.</p></div><span class="pill">{{ batch_name }}</span></div>
+<div class="hero"><div class="eyebrow">Your assigned batch</div><h2>{{ batch_name }}</h2><p>Timetable for {{ selected_date }} · View-only student access</p></div>
+<div class="card"><h2>Today's classes</h2>
+{% if classes %}
+<div class="table-wrap"><table><thead><tr><th>Time</th><th>Subject</th><th>Faculty</th><th>Classroom</th><th>Room details</th></tr></thead><tbody>
+{% for item in classes %}<tr><td><strong>{{ item.start_at.strftime('%I:%M %p') }}</strong><br><span class="muted">{{ item.end_at.strftime('%I:%M %p') }}</span></td><td><strong>{{ item.subject }}</strong></td><td>{{ item.teacher.name }}</td><td><span class="pill">{{ item.room.room_code }}</span></td><td>{{ item.room.building }} · Floor {{ item.room.floor }}<br><span class="muted">{{ item.room.capacity }} seats{% if item.room.has_projector %} · Projector{% endif %}</span></td></tr>{% endfor %}
+</tbody></table></div>
+{% else %}<div class="empty"><strong>No classes scheduled for this date</strong>Your batch timetable will appear here when demo classes are added.</div>{% endif %}
+</div>
+<div class="card"><h2>Recent notifications</h2>
+{% for item in notifications %}<div class="notification"><p>{{ item.message }}</p><small>{{ item.created_at.strftime('%d %b %Y, %I:%M %p') }}</small></div>{% else %}<div class="empty">No notifications yet.</div>{% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Timetable · SmartClass{% endblock %}
+{% block content %}
+<div class="page-head"><div><div class="eyebrow">Schedule</div><h1>{% if logged_in_user.role == 'admin' %}All class schedules{% elif logged_in_user.role == 'student' %}My timetable{% else %}My teaching timetable{% endif %}</h1><p class="sub">Choose a date to view scheduled classes.</p></div></div>
+<div class="card">
+<form class="filters" method="get"><div class="field"><label for="date">Select date</label><input type="date" id="date" name="date" value="{{ selected_date }}"></div><button class="btn" type="submit">Show timetable</button></form>
+</div>
+<div class="card"><h2>Classes for {{ selected_date }}</h2>
+{% if classes %}
+<div class="table-wrap"><table><thead><tr><th>Time</th><th>Subject</th><th>Teacher</th><th>Batch</th><th>Classroom</th><th>Room details</th>{% if logged_in_user.role == 'teacher' %}<th>Action</th>{% endif %}</tr></thead><tbody>
+{% for item in classes %}<tr>
+<td><strong>{{ item.start_at.strftime('%I:%M %p') }}</strong><br><span class="muted">{{ item.end_at.strftime('%I:%M %p') }}</span></td>
+<td>{{ item.subject }}</td><td>{{ item.teacher.name }}</td><td>{{ item.batch.name if item.batch else '—' }}</td><td><span class="pill">{{ item.room.room_code }}</span></td><td>{{ item.room.building }} · Floor {{ item.room.floor }}<br><span class="muted">{{ item.room.capacity }} seats{% if item.room.has_projector %} · Projector{% endif %}</span></td>
+{% if logged_in_user.role == 'teacher' %}<td>{% if item.teacher_id == logged_in_user.id %}<a href="{{ url_for('reschedule', session_id=item.id) }}">Request change</a>{% else %}<span class="muted">View only</span>{% endif %}</td>{% endif %}
+</tr>{% endfor %}
+</tbody></table></div>
+{% else %}<div class="empty"><strong>No classes found</strong>There are no scheduled classes for this date and your account's access scope.</div>{% endif %}
+</div>
+{% endblock %}

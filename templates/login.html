@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Sign in · SmartClass{% endblock %}
+{% block content %}
+<div class="login-shell"><div class="login-card">
+  <a class="brand" href="{{ url_for('login') }}"><span class="brandmark">S</span> SmartClass</a>
+  <div class="eyebrow" style="margin-top:28px">Campus classroom platform</div>
+  <h1>Welcome back</h1><p class="sub">Sign in to access your SmartClass workspace.</p>
+  <form method="post">
+    <div class="field"><label for="email">Email address</label><input id="email" name="email" type="email" placeholder="you@example.com" required autocomplete="username"></div>
+    <div class="field"><label for="password">Password</label><input id="password" name="password" type="password" placeholder="Enter your password" required autocomplete="current-password"></div>
+    <button class="btn" type="submit">Sign in</button>
+  </form>
+  <p class="muted" style="font-size:12px;margin:20px 0 0">Demo access is provided by your project administrator.</p>
+</div></div>
+{% endblock %}
